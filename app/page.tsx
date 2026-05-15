@@ -13,7 +13,7 @@ export default async function Home({
     <main className="page">
       <header className="hero">
         <h1>خرید کانفیگ V2Ray</h1>
-        <p>هر ۱ گیگابایت — ۲۰۰٬۰۰۰ ریال · پرداخت امن TetraPay</p>
+        <p>هر ۱ گیگابایت — ۲۰۰٬۰۰۰ تومان · پرداخت امن TetraPay</p>
       </header>
 
       {payment === "success" && (
