@@ -28,13 +28,6 @@ export default async function Home({
       )}
 
       <PurchaseForm />
-
-      <footer className="footer">
-        <p>
-          ربات تلگرام: پس از دیپلوی،{" "}
-          <code>/api/telegram/setup</code> را یک‌بار باز کنید
-        </p>
-      </footer>
     </main>
   );
 }
