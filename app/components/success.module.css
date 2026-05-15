@@ -1,0 +1,42 @@
+.banner {
+  position: relative;
+  z-index: 2;
+  max-width: 420px;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 16px;
+  text-align: center;
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 0.75rem;
+  line-height: 48px;
+  border-radius: 50%;
+  background: var(--success);
+  color: #0a0e17;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.banner h2 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.track code {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.note {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
