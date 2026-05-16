@@ -1,5 +1,5 @@
-/** Price per 1 GB in Iranian Rials (TetraPay / Darāmet amounts use rials). */
-export const PRICE_PER_GB_IRR = 200_000;
+/** Price per 1 GB in Iranian Rials (TetraPay / Dar\u0101met amounts use rials). */
+export const PRICE_PER_GB_IRR = 2_000_000;
 
 export const MIN_GB = 1;
 export const MAX_GB = 100;
