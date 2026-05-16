@@ -275,6 +275,8 @@ export default function PurchaseForm() {
                   <motion.a
                     href={order.paymentUrlWeb}
                     className={styles.btnPrimary}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -295,6 +297,8 @@ export default function PurchaseForm() {
                   <motion.a
                     href={order.paymentUrlWeb}
                     className={styles.btnPrimary}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -303,6 +307,8 @@ export default function PurchaseForm() {
                   <motion.a
                     href={order.paymentUrlBot}
                     className={styles.btnSecondary}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
