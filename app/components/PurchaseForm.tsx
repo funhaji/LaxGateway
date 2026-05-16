@@ -8,13 +8,17 @@ import {
   MAX_GB,
   formatIrr,
 } from "@/lib/pricing";
+import type { PaymentGateway } from "@/lib/payment-gateway";
 import styles from "./purchase.module.css";
 
 const GB_PRESETS = [1, 2, 5, 10, 20, 50];
 
-type Step = "form" | "pay" | "loading";
+type Step = "form" | "pay" | "loading" | "confirming";
 
 interface OrderResponse {
+  hashId: string;
+  gateway: PaymentGateway;
+  orderRefTag?: string;
   paymentUrlBot: string;
   paymentUrlWeb: string;
   amount: number;
@@ -24,6 +28,7 @@ interface OrderResponse {
 
 export default function PurchaseForm() {
   const [gb, setGb] = useState(5);
+  const [gateway, setGateway] = useState<PaymentGateway>("tetrapay");
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [step, setStep] = useState<Step>("form");
@@ -48,6 +53,7 @@ export default function PurchaseForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           gb,
+          gateway,
           mobile: normalized,
           email: email.trim() || "customer@web.local",
           channel: "web",
@@ -61,7 +67,38 @@ export default function PurchaseForm() {
       setError(e instanceof Error ? e.message : "خطا");
       setStep("form");
     }
-  }, [gb, mobile, email]);
+  }, [gb, mobile, email, gateway]);
+
+  const confirmDarametPayment = useCallback(async () => {
+    if (!order?.hashId) return;
+    setError("");
+    setStep("confirming");
+    try {
+      const res = await fetch("/api/order/daramet-confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ hashId: order.hashId }),
+      });
+      const data = (await res.json()) as Record<string, unknown>;
+      if (!res.ok || data.ok !== true) {
+        const msg =
+          (typeof data.error === "string" && data.error) ||
+          "پرداخت هنوز شناسایی نشد. چند ثانیه صبر کنید یا متن پیام دونیت را بررسی کنید.";
+        throw new Error(msg);
+      }
+
+      const q = new URLSearchParams({
+        payment: "success",
+        gb: String(data.gb ?? ""),
+        amount: String(data.amount ?? ""),
+        tracking: typeof data.tracking === "string" ? data.tracking : "",
+      });
+      window.location.assign(`/?${q.toString()}`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "خطا");
+      setStep("pay");
+    }
+  }, [order]);
 
   return (
     <motion.div
@@ -124,6 +161,28 @@ export default function PurchaseForm() {
               </span>
             </p>
 
+            <label className={styles.label}>درگاه پرداخت</label>
+            <div className={styles.gatewayRow}>
+              <button
+                type="button"
+                className={`${styles.gatewayBtn} ${
+                  gateway === "tetrapay" ? styles.gatewayBtnActive : ""
+                }`}
+                onClick={() => setGateway("tetrapay")}
+              >
+                TetraPay
+              </button>
+              <button
+                type="button"
+                className={`${styles.gatewayBtn} ${
+                  gateway === "daramet" ? styles.gatewayBtnActive : ""
+                }`}
+                onClick={() => setGateway("daramet")}
+              >
+                دارمت (وب‌اینتنت)
+              </button>
+            </div>
+
             <label className={styles.label}>شماره موبایل</label>
             <input
               className={styles.input}
@@ -158,6 +217,19 @@ export default function PurchaseForm() {
           </motion.div>
         )}
 
+        {step === "confirming" && (
+          <motion.div
+            key="confirming"
+            className={styles.loading}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className={styles.spinner} />
+            <p>در حال تأیید پرداخت دارمت…</p>
+          </motion.div>
+        )}
+
         {step === "loading" && (
           <motion.div
             key="loading"
@@ -186,29 +258,68 @@ export default function PurchaseForm() {
               روش پرداخت را انتخاب کنید:
             </p>
 
+            {error && <p className={styles.error}>{error}</p>}
+
             <div className={styles.payButtons}>
-              <motion.a
-                href={order.paymentUrlWeb}
-                className={styles.btnPrimary}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                🌐 پرداخت در وب
-              </motion.a>
-              <motion.a
-                href={order.paymentUrlBot}
-                className={styles.btnSecondary}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                🤖 پرداخت در تلگرام
-              </motion.a>
+              {order.gateway === "daramet" ? (
+                <>
+                  <p className={`${styles.muted} ${styles.small}`}>
+                    در دارمت پیام پیش‌فرض دونیت را تغییر ندهید (کد تأیید داخل پیام آمده است).
+                  </p>
+                  {order.orderRefTag ? (
+                    <p className={styles.muted}>
+                      کد تأیید سفارش:{" "}
+                      <span className={styles.refCode}>{order.orderRefTag}</span>
+                    </p>
+                  ) : null}
+                  <motion.a
+                    href={order.paymentUrlWeb}
+                    className={styles.btnPrimary}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    💚 باز کردن دارمت (پرداخت)
+                  </motion.a>
+                  <motion.button
+                    type="button"
+                    className={styles.btnSecondary}
+                    onClick={confirmDarametPayment}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    ✅ تأیید پرداخت
+                  </motion.button>
+                </>
+              ) : (
+                <>
+                  <motion.a
+                    href={order.paymentUrlWeb}
+                    className={styles.btnPrimary}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    🌐 پرداخت در وب
+                  </motion.a>
+                  <motion.a
+                    href={order.paymentUrlBot}
+                    className={styles.btnSecondary}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    🤖 پرداخت در تلگرام
+                  </motion.a>
+                </>
+              )}
             </div>
 
             <button
               type="button"
               className={styles.btnLink}
-              onClick={() => setStep("form")}
+              onClick={() => {
+                setOrder(null);
+                setError("");
+                setStep("form");
+              }}
             >
               ← بازگشت
             </button>

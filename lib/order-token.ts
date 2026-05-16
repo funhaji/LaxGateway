@@ -1,9 +1,13 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { getOrderSecret } from "./config";
 
+import type { PaymentGateway } from "./payment-gateway";
+
 export type OrderChannel = "web" | "bot";
 
 export interface OrderPayload {
+  /** Present on new orders; missing tokens are treated as TetraPay (legacy). */
+  gateway?: PaymentGateway;
   gb: number;
   amount: number;
   email: string;

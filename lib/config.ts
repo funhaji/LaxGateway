@@ -19,6 +19,24 @@ export function getTetrapayApiKey(): string {
   return required("TETRAPAY_API_KEY");
 }
 
+/** Daramet Developer API token (sent as Authorization header). */
+export function getDarametApiToken(): string {
+  return required("DARAMET_API_TOKEN");
+}
+
+/** Darāmet public profile slug used in Webintent links (same as your username on Darāmet). */
+export function getDarametUsername(): string {
+  const raw = required("DARAMET_USERNAME").trim();
+  const u = raw.replace(/^\/+|\/+$/g, "").trim();
+  if (!u) throw new Error("Missing env: DARAMET_USERNAME");
+  return u;
+}
+
+export function assertDarametEnv(): void {
+  getDarametApiToken();
+  getDarametUsername();
+}
+
 export function getOrderSecret(): string {
   return required("ORDER_SIGNING_SECRET");
 }

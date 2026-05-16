@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createPurchaseOrder } from "@/lib/orders";
 import type { OrderChannel } from "@/lib/order-token";
+import { parsePaymentGateway } from "@/lib/payment-gateway";
 
 export const runtime = "nodejs";
 
@@ -11,6 +12,7 @@ export async function POST(req: NextRequest) {
       email?: string;
       mobile?: string;
       channel?: OrderChannel;
+      gateway?: string;
       telegramUserId?: number;
       telegramUsername?: string;
       telegramChatId?: number;
@@ -20,6 +22,7 @@ export async function POST(req: NextRequest) {
     const email = (body.email || "customer@tetrapay.local").trim();
     const mobile = (body.mobile || "").trim();
     const channel: OrderChannel = body.channel === "bot" ? "bot" : "web";
+    const gateway = parsePaymentGateway(body.gateway) ?? "tetrapay";
 
     if (!mobile && channel === "web") {
       return NextResponse.json({ error: "شماره موبایل الزامی است" }, { status: 400 });
@@ -30,6 +33,7 @@ export async function POST(req: NextRequest) {
       email,
       mobile: mobile || "09000000000",
       channel,
+      gateway,
       telegramUserId: body.telegramUserId,
       telegramUsername: body.telegramUsername,
       telegramChatId: body.telegramChatId,

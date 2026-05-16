@@ -1,23 +1,36 @@
 import { amountForGb } from "./pricing";
 import { encodeOrderId, type OrderChannel, type OrderPayload } from "./order-token";
+import type { PaymentGateway } from "./payment-gateway";
+import {
+  assertDarametEnv,
+  getAppUrl,
+  getDarametUsername,
+  getProductName,
+} from "./config";
+import {
+  buildDarametWebIntentUrl,
+  darametOrderRefTag,
+} from "./daramet";
 import { createTetrapayOrder } from "./tetrapay";
-import { getAppUrl, getProductName } from "./config";
 
 export interface CreateOrderRequest {
   gb: number;
   email: string;
   mobile: string;
   channel: OrderChannel;
+  gateway: PaymentGateway;
   telegramUserId?: number;
   telegramUsername?: string;
   telegramChatId?: number;
 }
 
 export async function createPurchaseOrder(input: CreateOrderRequest) {
+  const gateway: PaymentGateway = input.gateway;
   const amount = amountForGb(input.gb);
   const description = `${getProductName()} — ${input.gb} GB`;
 
   const payload: OrderPayload = {
+    gateway,
     gb: input.gb,
     amount,
     email: input.email,
@@ -31,6 +44,26 @@ export async function createPurchaseOrder(input: CreateOrderRequest) {
   };
 
   const hashId = encodeOrderId(payload);
+
+  if (gateway === "daramet") {
+    assertDarametEnv();
+    const ref = darametOrderRefTag(hashId);
+    const donateMessage = `V2:${ref}:${input.gb}GB`;
+    const url = buildDarametWebIntentUrl(getDarametUsername(), amount, donateMessage);
+
+    return {
+      hashId,
+      authority: "",
+      paymentUrlBot: url,
+      paymentUrlWeb: url,
+      trackingId: undefined as string | undefined,
+      amount,
+      gb: input.gb,
+      gateway,
+      orderRefTag: ref,
+    };
+  }
+
   const callbackUrl = `${getAppUrl()}/api/tetrapay/callback`;
 
   const result = await createTetrapayOrder({
@@ -50,5 +83,6 @@ export async function createPurchaseOrder(input: CreateOrderRequest) {
     trackingId: result.tracking_id,
     amount,
     gb: input.gb,
+    gateway,
   };
 }

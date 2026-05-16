@@ -13,7 +13,7 @@ export default async function Home({
     <main className="page">
       <header className="hero">
         <h1>خرید کانفیگ V2Ray</h1>
-        <p>هر ۱ گیگابایت — ۲۰۰٬۰۰۰ تومان · پرداخت امن TetraPay</p>
+        <p>هر ۱ گیگابایت — ۲۰۰٬۰۰۰ ریال · پرداخت از طریق TetraPay یا دارمت</p>
       </header>
 
       {payment === "success" && (
@@ -28,6 +28,13 @@ export default async function Home({
       )}
 
       <PurchaseForm />
+
+      <footer className="footer">
+        <p>
+          ربات تلگرام: پس از دیپلوی،{" "}
+          <code>/api/telegram/setup</code> را یک‌بار باز کنید
+        </p>
+      </footer>
     </main>
   );
 }

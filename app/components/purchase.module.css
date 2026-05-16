@@ -69,6 +69,53 @@
   background: rgba(59, 158, 255, 0.1);
 }
 
+.gatewayRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.gatewayBtn {
+  flex: 1;
+  min-width: 124px;
+  padding: 0.55rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    color 0.2s,
+    background 0.2s;
+}
+
+.gatewayBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.gatewayBtnActive {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(59, 158, 255, 0.12);
+  font-weight: 600;
+}
+
+.refCode {
+  display: inline-block;
+  margin-top: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--success);
+  font-family: ui-monospace, monospace;
+  font-size: 0.9rem;
+  direction: ltr;
+}
+
 .priceLine {
   margin: 1rem 0;
   font-size: 1.05rem;
