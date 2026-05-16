@@ -1,4 +1,4 @@
-/** Price per 1 GB in Iranian Rials */
+/** Price per 1 GB in Iranian Rials (TetraPay / Darāmet amounts use rials). */
 export const PRICE_PER_GB_IRR = 200_000;
 
 export const MIN_GB = 1;
@@ -11,6 +11,8 @@ export function amountForGb(gb: number): number {
   return gb * PRICE_PER_GB_IRR;
 }
 
-export function formatIrr(amount: number): string {
-  return new Intl.NumberFormat("fa-IR").format(amount) + " ریال";
+/** Format a rials amount for UI: 1 تومان = 10 ریال */
+export function formatToman(amountRials: number): string {
+  const tomans = amountRials / 10;
+  return new Intl.NumberFormat("fa-IR").format(tomans) + " تومان";
 }

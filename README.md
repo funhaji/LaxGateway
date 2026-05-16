@@ -4,7 +4,7 @@ Purchase gateway for V2Ray configs via **TetraPay** or **Darāmet** — web and 
 
 ## Features
 
-- Web shop with GB picker (200,000 IRR per GB) and gateway choice (**TetraPay** or **Darāmet**)
+- Web shop with GB picker (۲۰٬۰۰۰ تومان per GB — **۲۰۰٬۰۰۰ ریال** charged by gateways) and gateway choice (**TetraPay** or **Darāmet**)
 - Telegram bot: GB → gateway → mobile → pay links
 - TetraPay: web/Telegram pay URLs + automatic callback verification
 - Darāmet: Webintent donate URL; **تأیید پرداخت** uses `Donates/Search` to match the order

@@ -6,7 +6,7 @@ import {
   PRICE_PER_GB_IRR,
   MIN_GB,
   MAX_GB,
-  formatIrr,
+  formatToman,
 } from "@/lib/pricing";
 import type { PaymentGateway } from "@/lib/payment-gateway";
 import styles from "./purchase.module.css";
@@ -154,10 +154,10 @@ export default function PurchaseForm() {
             </motion.div>
 
             <p className={styles.priceLine}>
-              مبلغ: <strong>{formatIrr(amount)}</strong>
+              مبلغ: <strong>{formatToman(amount)}</strong>
               <span className={styles.muted}>
                 {" "}
-                (هر GB = {formatIrr(PRICE_PER_GB_IRR)})
+                (هر GB = {formatToman(PRICE_PER_GB_IRR)})
               </span>
             </p>
 
@@ -252,7 +252,7 @@ export default function PurchaseForm() {
           >
             <p className={styles.successBadge}>سفارش آماده پرداخت است</p>
             <p className={styles.priceLine}>
-              {order.gb} GB — <strong>{formatIrr(order.amount)}</strong>
+              {order.gb} GB — <strong>{formatToman(order.amount)}</strong>
             </p>
             <p className={`${styles.muted} ${styles.small}`}>
               روش پرداخت را انتخاب کنید:

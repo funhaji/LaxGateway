@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { formatIrr } from "@/lib/pricing";
+import { formatToman } from "@/lib/pricing";
 import styles from "./success.module.css";
 
 interface Props {
@@ -23,7 +23,7 @@ export default function SuccessBanner({ gb, amount, tracking }: Props) {
       <h2>پرداخت موفق</h2>
       <p>
         <strong>{gb} GB</strong>
-        {amountNum > 0 && <> — {formatIrr(amountNum)}</>}
+        {amountNum > 0 && <> — {formatToman(amountNum)}</>}
       </p>
       <p className={styles.track}>
         کد پیگیری: <code>{tracking}</code>

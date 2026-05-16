@@ -1,4 +1,4 @@
-import { MIN_GB, MAX_GB, PRICE_PER_GB_IRR, formatIrr } from "./pricing";
+import { MIN_GB, MAX_GB, PRICE_PER_GB_IRR, formatToman } from "./pricing";
 import { createPurchaseOrder } from "./orders";
 import { sendMessage, answerCallbackQuery } from "./telegram";
 import { getProductName, getSupportContact } from "./config";
@@ -43,7 +43,7 @@ function gbKeyboard() {
   const sizes = [1, 2, 5, 10, 20, 50];
   const rows = sizes.map((gb) => [
     {
-      text: `${gb} GB — ${formatIrr(gb * PRICE_PER_GB_IRR)}`,
+      text: `${gb} GB — ${formatToman(gb * PRICE_PER_GB_IRR)}`,
       callback_data: `gb:${gb}`,
     },
   ]);
@@ -88,7 +88,7 @@ async function startFlow(chatId: number, user?: TelegramUser) {
       `سلام ${name}! 👋`,
       "",
       `خرید *${getProductName()}*`,
-      `هر ۱ گیگابایت: *${formatIrr(PRICE_PER_GB_IRR)}*`,
+      `هر ۱ گیگابایت: *${formatToman(PRICE_PER_GB_IRR)}*`,
       "",
       "حجم مورد نظر را انتخاب کنید:",
     ].join("\n"),
@@ -159,7 +159,7 @@ async function createBotOrder(
   const lines = [
     "✅ سفارش ایجاد شد!",
     "",
-    `📦 ${gb} GB — ${formatIrr(order.amount)}`,
+    `📦 ${gb} GB — ${formatToman(order.amount)}`,
     `🔌 درگاه: ${gateway === "daramet" ? "دارمت" : "TetraPay"}`,
     "",
   ];

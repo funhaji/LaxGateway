@@ -1,4 +1,4 @@
-import { formatIrr } from "./pricing";
+import { formatToman } from "./pricing";
 import type { OrderPayload } from "./order-token";
 import { getProductName, getSupportContact } from "./config";
 
@@ -28,7 +28,7 @@ export function buildAdminReceipt(ctx: ReceiptContext): string {
     "",
     `📦 محصول: ${getProductName()}`,
     `📊 حجم: *${order.gb} GB*`,
-    `💰 مبلغ: *${formatIrr(order.amount)}*`,
+    `💰 مبلغ: *${formatToman(order.amount)}*`,
     `📡 کانال: ${channel}`,
     "",
     "👤 مشتری:",
@@ -53,7 +53,7 @@ export function buildCustomerReceipt(ctx: ReceiptContext): string {
     "",
     `📦 ${getProductName()}`,
     `📊 حجم خریداری‌شده: *${order.gb} GB*`,
-    `💰 مبلغ پرداخت‌شده: ${formatIrr(order.amount)}`,
+    `💰 مبلغ پرداخت‌شده: ${formatToman(order.amount)}`,
     "",
     "🔖 کد پیگیری:",
     trackingId ? `\`${trackingId}\`` : `\`${authority}\``,
@@ -69,7 +69,7 @@ export function buildWebSuccessHtml(ctx: ReceiptContext): string {
   const { order, authority, trackingId } = ctx;
   return `
     <p><strong>حجم:</strong> ${order.gb} GB</p>
-    <p><strong>مبلغ:</strong> ${formatIrr(order.amount)}</p>
+    <p><strong>مبلغ:</strong> ${formatToman(order.amount)}</p>
     <p><strong>کد پیگیری:</strong> <code>${trackingId || authority}</code></p>
     <p>کانفیگ V2Ray به زودی برای شما ارسال می‌شود. پشتیبانی: ${getSupportContact()}</p>
   `;
